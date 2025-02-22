@@ -1,76 +1,97 @@
-# Belajar Asynchronous Process
+# Belajar Asynchronous Process di JavaScript
 
-Asynchronous Process adalah metode eksekusi di mana suatu operasi dapat berjalan di latar belakang tanpa menghentikan eksekusi utama dari suatu program. Ini sangat berguna untuk meningkatkan performa dan efisiensi, terutama dalam menangani operasi I/O seperti membaca file, permintaan jaringan, atau akses database.
+## 📌 Pendahuluan
 
-## 📌 Mengapa Menggunakan Asynchronous Process?
-- Menghindari blocking (penghentian sementara eksekusi utama)
-- Meningkatkan efisiensi CPU
-- Meningkatkan performa aplikasi, terutama dalam operasi I/O
-- Memungkinkan eksekusi beberapa tugas secara paralel
+Asynchronous Process adalah konsep dalam pemrograman JavaScript yang memungkinkan eksekusi kode tanpa harus menunggu proses sebelumnya selesai. Ini sangat penting dalam pengembangan web modern untuk meningkatkan performa aplikasi.
 
-## 🚀 Implementasi Asynchronous dalam Berbagai Bahasa
+## 🚀 Konsep Dasar
 
-### 1. JavaScript (Node.js - Async/Await)
+1. **Synchronous vs Asynchronous**
+
+   - **Synchronous**: Kode dieksekusi secara berurutan.
+   - **Asynchronous**: Kode tidak harus menunggu perintah sebelumnya selesai untuk dieksekusi.
+
+2. **Callback Function**
+
+   - Fungsi yang diberikan sebagai argumen ke fungsi lain dan dieksekusi setelah tugas selesai.
+
+   ```javascript
+   function prosesAsync(callback) {
+       setTimeout(() => {
+           console.log("Proses selesai!");
+           callback();
+       }, 2000);
+   }
+
+   function selesai() {
+       console.log("Lanjut ke proses berikutnya.");
+   }
+
+   prosesAsync(selesai);
+   ```
+
+3. **Promises**
+
+   - Memudahkan manajemen kode asynchronous dengan `.then()` dan `.catch()`.
+
+   ```javascript
+   function prosesAsync() {
+       return new Promise((resolve, reject) => {
+           setTimeout(() => {
+               resolve("Proses selesai!");
+           }, 2000);
+       });
+   }
+
+   prosesAsync()
+       .then(response => console.log(response))
+       .catch(error => console.log(error));
+   ```
+
+4. **Async/Await**
+
+   - Cara yang lebih bersih dan mudah dibaca untuk menangani proses asynchronous.
+
+   ```javascript
+   async function jalankanProses() {
+       try {
+           let hasil = await prosesAsync();
+           console.log(hasil);
+       } catch (error) {
+           console.log(error);
+       }
+   }
+
+   jalankanProses();
+   ```
+
+## 🎯 Studi Kasus
+
+Implementasi Async/Await dalam pengambilan data dari API menggunakan `fetch`.
+
 ```javascript
-const fetch = require('node-fetch');
-
 async function fetchData() {
     try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-        const data = await response.json();
+        let response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
+        let data = await response.json();
         console.log(data);
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Terjadi kesalahan!", error);
     }
 }
 
 fetchData();
 ```
 
-### 2. Python (Asyncio)
-```python
-import asyncio
-import aiohttp
+## 📚 Kesimpulan
 
-async def fetch_data():
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://jsonplaceholder.typicode.com/todos/1') as response:
-            data = await response.json()
-            print(data)
+- Callback digunakan untuk menangani asynchronous tetapi bisa menyebabkan "callback hell".
+- Promises memperbaiki masalah callback dengan pendekatan chaining.
+- Async/Await membuat kode lebih bersih dan mudah dibaca.
 
-asyncio.run(fetch_data())
-```
+## 🛠 Latihan
 
-### 3. Java (CompletableFuture)
-```java
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+1. Buat fungsi asynchronous yang membaca file JSON dan menampilkannya di console.
+2. Gunakan `fetch` untuk mengambil data dari API dan tampilkan hanya `title` dari 5 data pertama.
 
-public class AsyncExample {
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return "Hello, Asynchronous Java!";
-        });
-        System.out.println(future.get());
-    }
-}
-```
-
-## 🔥 Perbedaan Synchronous vs Asynchronous
-| Synchronous | Asynchronous |
-|-------------|-------------|
-| Eksekusi berjalan satu per satu | Eksekusi bisa berjalan bersamaan |
-| Blokir eksekusi utama sampai selesai | Tidak menghentikan eksekusi utama |
-| Contoh: Looping for biasa | Contoh: Callback, Promise, Async/Await |
-
-## 📚 Referensi
-- [MDN Web Docs - Async JavaScript](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous)
-- [Python asyncio Documentation](https://docs.python.org/3/library/asyncio.html)
-- [Java CompletableFuture](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/CompletableFuture.html)
-
-Semoga bermanfaat! 🚀
+Selamat belajar
