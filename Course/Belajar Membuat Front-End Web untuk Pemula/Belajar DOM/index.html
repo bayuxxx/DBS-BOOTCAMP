@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar DOM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Belajar DOM</h1>
+        <button id="btn-change-text">Ubah Teks</button>
+        <button id="btn-change-color">Ubah Warna</button>
+        <button id="btn-show-alert">Tampilkan Alert</button>
+        <p id="output">Ini adalah teks awal.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const btnChangeText = document.getElementById('btn-change-text');
+            const btnChangeColor = document.getElementById('btn-change-color');
+            const btnShowAlert = document.getElementById('btn-show-alert');
+            const output = document.getElementById('output');
+
+            btnChangeText.addEventListener('click', () => {
+                output.textContent = 'Teks telah diubah!';
+            });
+
+            btnChangeColor.addEventListener('click', () => {
+                output.style.color = output.style.color === 'red' ? 'black' : 'red';
+            });
+
+            btnShowAlert.addEventListener('click', () => {
+                alert('Ini adalah alert dari JavaScript!');
+            });
+        });
+    </script>
+</body>
+</html>
