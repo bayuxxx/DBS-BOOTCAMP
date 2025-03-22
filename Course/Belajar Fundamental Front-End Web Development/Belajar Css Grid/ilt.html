@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Notes App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Notes</h1>
+            <button class="add-note-btn">
+                <i class="fas fa-plus"></i> Add Note
+            </button>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search notes...">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="notes-grid">
+            <!-- Sample Notes -->
+            <div class="note" style="background-color: #FFD93D">
+                <div class="note-header">
+                    <h3>Shopping List</h3>
+                    <div class="note-actions">
+                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+                <p class="note-content">
+                    1. Milk
+                    2. Eggs
+                    3. Bread
+                    4. Fruits
+                </p>
+                <div class="note-footer">
+                    <span class="date">March 1, 2025</span>
+                </div>
+            </div>
+
+            <div class="note" style="background-color: #98EECC">
+                <div class="note-header">
+                    <h3>Meeting Notes</h3>
+                    <div class="note-actions">
+                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+                <p class="note-content">
+                    - Project timeline review
+                    - Budget discussion
+                    - Team assignments
+                </p>
+                <div class="note-footer">
+                    <span class="date">March 1, 2025</span>
+                </div>
+            </div>
+
+            <div class="note" style="background-color: #FF8B8B">
+                <div class="note-header">
+                    <h3>Ideas</h3>
+                    <div class="note-actions">
+                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-trash"></i>
+                    </div>
+                </div>
+                <p class="note-content">
+                    New app features:
+                    - Dark mode
+                    - Cloud sync
+                    - Share notes
+                </p>
+                <div class="note-footer">
+                    <span class="date">March 1, 2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

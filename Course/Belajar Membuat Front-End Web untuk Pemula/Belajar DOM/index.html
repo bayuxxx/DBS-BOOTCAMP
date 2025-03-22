@@ -24,9 +24,12 @@
         <button id="btn-change-color">Ubah Warna</button>
         <button id="btn-show-alert">Tampilkan Alert</button>
         <p id="output">Ini adalah teks awal.</p>
+        <button onclick="console.log('Wah aku di click!')">Klik Aku</button>
+        <button onclick="alert('Ini adalah alert dari JavaScript!');">Alert</button>
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", )
         document.addEventListener('DOMContentLoaded', (event) => {
             const btnChangeText = document.getElementById('btn-change-text');
             const btnChangeColor = document.getElementById('btn-change-color');
