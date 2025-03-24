@@ -2,10 +2,10 @@ export const NoteListStyle = `
 :host {
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: block;
-    margin-top: 80px;
 }
 
 .controls {
+    margin-top: 80px;
     position: sticky;
     top: 70px;
     display: flex;
@@ -154,7 +154,7 @@ button {
 
 @media (max-width: 768px) {
     :host {
-        margin-top: 70px;
+        margin-top: 40px;
     }
     .controls {
         top: 70px;
@@ -179,5 +179,4 @@ button {
         padding: 1.5rem;
     }
 }
-
-`
+`;

@@ -1,28 +1,28 @@
 import { NoteFormStyles } from "../style/note-form-style";
 import NoteServices from "../api/api-service";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 class NoteFormDialog extends HTMLElement {
-    #noteServices;
-    #form;
-    #dialog;
+  #noteServices;
+  #form;
+  #dialog;
 
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.#noteServices = new NoteServices();
-        this.#initializeStyles();
-        this.#initializeDOM();
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.#noteServices = new NoteServices();
+    this.#initializeStyles();
+    this.#initializeDOM();
+  }
 
-    #initializeStyles() {
-        const styleElement = document.createElement('style');
-        styleElement.textContent = NoteFormStyles;
-        this.shadowRoot.appendChild(styleElement);
-    }
+  #initializeStyles() {
+    const styleElement = document.createElement("style");
+    styleElement.textContent = NoteFormStyles;
+    this.shadowRoot.appendChild(styleElement);
+  }
 
-    #initializeDOM() {
-        this.shadowRoot.innerHTML += `
+  #initializeDOM() {
+    this.shadowRoot.innerHTML += `
             <div class="dialog-overlay">
                 <div class="dialog-content">
                     <div class="dialog-header">
@@ -53,177 +53,193 @@ class NoteFormDialog extends HTMLElement {
                 </div>
             </div>
         `;
-        
-        this.#form = this.shadowRoot.querySelector('#noteForm');
-        this.#dialog = this.shadowRoot.querySelector('.dialog-overlay');
-    }
 
-    connectedCallback() {
-        this.#addEventListeners();
-    }
+    this.#form = this.shadowRoot.querySelector("#noteForm");
+    this.#dialog = this.shadowRoot.querySelector(".dialog-overlay");
+  }
 
-    #addEventListeners() {
-        const closeButton = this.shadowRoot.querySelector('.close-button');
-        const cancelButton = this.shadowRoot.querySelector('.cancel-button');
-        const titleInput = this.shadowRoot.querySelector('#title');
-        const bodyInput = this.shadowRoot.querySelector('#body');
+  connectedCallback() {
+    this.#addEventListeners();
+  }
 
-        this.#setupFieldValidation(titleInput, {
-            required: 'Title is required',
-            minLength: 'Title must be at least 3 characters',
-            maxLength: 'Title cannot exceed 50 characters'
-        });
+  #addEventListeners() {
+    const closeButton = this.shadowRoot.querySelector(".close-button");
+    const cancelButton = this.shadowRoot.querySelector(".cancel-button");
+    const titleInput = this.shadowRoot.querySelector("#title");
+    const bodyInput = this.shadowRoot.querySelector("#body");
 
-        this.#setupFieldValidation(bodyInput, {
-            required: 'Note content is required',
-            minLength: 'Note content must be at least 10 characters',
-            maxLength: 'Note content cannot exceed 1000 characters'
-        });
+    this.#setupFieldValidation(titleInput, {
+      required: "Title is required",
+      minLength: "Title must be at least 3 characters",
+      maxLength: "Title cannot exceed 50 characters",
+    });
 
-        closeButton.addEventListener('click', () => this.close());
-        cancelButton.addEventListener('click', () => this.close());
+    this.#setupFieldValidation(bodyInput, {
+      required: "Note content is required",
+      minLength: "Note content must be at least 10 characters",
+      maxLength: "Note content cannot exceed 1000 characters",
+    });
 
-        this.#form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (this.#validateForm()) {
-                try {
-                    const saveButton = this.#form.querySelector('.save-button');
-                    saveButton.disabled = true;
-                    saveButton.textContent = 'Saving...';
+    closeButton.addEventListener("click", () => this.close());
+    cancelButton.addEventListener("click", () => this.close());
 
-                    const formData = new FormData(this.#form);
-                    const noteData = {
-                        title: formData.get('title').trim(),
-                        body: formData.get('body').trim(),
-                    };
+    this.#form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-                    const response = await this.#noteServices.createNote(noteData);
+      if (this.#validateForm()) {
+        try {
+          const saveButton = this.#form.querySelector(".save-button");
+          saveButton.disabled = true;
+          saveButton.textContent = "Saving...";
 
-                    if (response.status === 'success') {
-                        await Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: 'Note has been successfully created',
-                            confirmButtonColor: '#3085d6',
-                        });
+          const formData = new FormData(this.#form);
+          const noteData = {
+            title: formData.get("title").trim(),
+            body: formData.get("body").trim(),
+          };
 
-                        this.dispatchEvent(new CustomEvent('note-submitted', {
-                            detail: response.data
-                        }));
-                        this.#form.reset();
-                        this.close();
-                    } else {
-                        throw new Error('Failed to create note');
-                    }
-                } catch (error) {
-                    console.error('Error creating note:', error);
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Failed to create note. Please try again.',
-                        confirmButtonColor: '#d33',
-                    });
-                } finally {
-                    const saveButton = this.#form.querySelector('.save-button');
-                    saveButton.disabled = false;
-                    saveButton.textContent = 'Save Note';
-                }
-            }
-        });
-    }
+          const response = await this.#noteServices.createNote(noteData);
 
-    #setupFieldValidation(field, messages) {
-        const errorDisplay = this.shadowRoot.querySelector(`.error-message[data-for="${field.id}"]`);
-        const charCount = this.shadowRoot.querySelector(`.character-count[data-for="${field.id}"]`);
-        const validationIcon = field.parentElement.querySelector('.validation-icon');
+          if (response.status === "success") {
+            await Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Note has been successfully created",
+              confirmButtonColor: "#3085d6",
+            });
 
-        const updateCharCount = () => {
-            const current = field.value.length;
-            const max = field.maxLength;
-            charCount.textContent = `${current}/${max}`;
-            charCount.classList.toggle('error', current > max);
-        };
+            this.dispatchEvent(
+              new CustomEvent("note-submitted", {
+                detail: response.data,
+              }),
+            );
+            this.#form.reset();
+            this.close();
+          } else {
+            throw new Error("Failed to create note");
+          }
+        } catch (error) {
+          console.error("Error creating note:", error);
+          await Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Failed to create note. Please try again.",
+            confirmButtonColor: "#d33",
+          });
+        } finally {
+          const saveButton = this.#form.querySelector(".save-button");
+          saveButton.disabled = false;
+          saveButton.textContent = "Save Note";
+        }
+      }
+    });
+  }
 
-        const validateField = () => {
-            let error = '';
-            field.classList.remove('error');
-            errorDisplay.classList.remove('show');
-            validationIcon.classList.remove('valid', 'invalid', 'show');
+  #setupFieldValidation(field, messages) {
+    const errorDisplay = this.shadowRoot.querySelector(
+      `.error-message[data-for="${field.id}"]`,
+    );
+    const charCount = this.shadowRoot.querySelector(
+      `.character-count[data-for="${field.id}"]`,
+    );
+    const validationIcon =
+      field.parentElement.querySelector(".validation-icon");
 
-            if (field.validity.valueMissing) {
-                error = messages.required;
-            } else if (field.validity.tooShort) {
-                error = messages.minLength;
-            } else if (field.validity.tooLong) {
-                error = messages.maxLength;
-            }
+    const updateCharCount = () => {
+      const current = field.value.length;
+      const max = field.maxLength;
+      charCount.textContent = `${current}/${max}`;
+      charCount.classList.toggle("error", current > max);
+    };
 
-            if (error) {
-                field.classList.add('error');
-                errorDisplay.textContent = error;
-                errorDisplay.classList.add('show');
-                validationIcon.classList.add('invalid', 'show');
-            } else if (field.value.length > 0) {
-                validationIcon.classList.add('valid', 'show');
-            }
+    const validateField = () => {
+      let error = "";
+      field.classList.remove("error");
+      errorDisplay.classList.remove("show");
+      validationIcon.classList.remove("valid", "invalid", "show");
 
-            return !error;
-        };
+      if (field.validity.valueMissing) {
+        error = messages.required;
+      } else if (field.validity.tooShort) {
+        error = messages.minLength;
+      } else if (field.validity.tooLong) {
+        error = messages.maxLength;
+      }
 
-        field.addEventListener('input', () => {
-            updateCharCount();
-            validateField();
-        });
+      if (error) {
+        field.classList.add("error");
+        errorDisplay.textContent = error;
+        errorDisplay.classList.add("show");
+        validationIcon.classList.add("invalid", "show");
+      } else if (field.value.length > 0) {
+        validationIcon.classList.add("valid", "show");
+      }
 
-        field.addEventListener('blur', validateField);
-        updateCharCount();
-    }
+      return !error;
+    };
 
-    #validateForm() {
-        const titleValid = this.#validateField(this.shadowRoot.querySelector('#title'));
-        const bodyValid = this.#validateField(this.shadowRoot.querySelector('#body'));
-        return titleValid && bodyValid;
-    }
+    field.addEventListener("input", () => {
+      updateCharCount();
+      validateField();
+    });
 
-    #validateField(field) {
-        const event = new Event('blur');
-        field.dispatchEvent(event);
-        return field.validity.valid;
-    }
+    field.addEventListener("blur", validateField);
+    updateCharCount();
+  }
 
-    async #showError(message) {
-        await Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: message,
-            confirmButtonColor: '#d33',
-        });
-    }
+  #validateForm() {
+    const titleValid = this.#validateField(
+      this.shadowRoot.querySelector("#title"),
+    );
+    const bodyValid = this.#validateField(
+      this.shadowRoot.querySelector("#body"),
+    );
+    return titleValid && bodyValid;
+  }
 
-    open() {
-        this.#dialog.classList.add('show');
-    }
+  #validateField(field) {
+    const event = new Event("blur");
+    field.dispatchEvent(event);
+    return field.validity.valid;
+  }
 
-    close() {
-        this.#dialog.classList.remove('show');
-        this.#form.reset();
-        
-        const fields = this.#form.querySelectorAll('input, textarea');
-        fields.forEach(field => {
-            field.classList.remove('error');
-            const errorDisplay = this.shadowRoot.querySelector(`.error-message[data-for="${field.id}"]`);
-            const validationIcon = field.parentElement.querySelector('.validation-icon');
-            errorDisplay.classList.remove('show');
-            validationIcon.classList.remove('valid', 'invalid', 'show');
-            
-            const charCount = this.shadowRoot.querySelector(`.character-count[data-for="${field.id}"]`);
-            charCount.textContent = `0/${field.maxLength}`;
-            charCount.classList.remove('error');
-        });
-    }
+  async #showError(message) {
+    await Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: message,
+      confirmButtonColor: "#d33",
+    });
+  }
+
+  open() {
+    this.#dialog.classList.add("show");
+  }
+
+  close() {
+    this.#dialog.classList.remove("show");
+    this.#form.reset();
+
+    const fields = this.#form.querySelectorAll("input, textarea");
+    fields.forEach((field) => {
+      field.classList.remove("error");
+      const errorDisplay = this.shadowRoot.querySelector(
+        `.error-message[data-for="${field.id}"]`,
+      );
+      const validationIcon =
+        field.parentElement.querySelector(".validation-icon");
+      errorDisplay.classList.remove("show");
+      validationIcon.classList.remove("valid", "invalid", "show");
+
+      const charCount = this.shadowRoot.querySelector(
+        `.character-count[data-for="${field.id}"]`,
+      );
+      charCount.textContent = `0/${field.maxLength}`;
+      charCount.classList.remove("error");
+    });
+  }
 }
 
-customElements.define('note-form-dialog', NoteFormDialog);
+customElements.define("note-form-dialog", NoteFormDialog);
 
 export default NoteFormDialog;
