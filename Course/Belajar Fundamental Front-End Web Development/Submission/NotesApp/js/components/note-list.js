@@ -1,18 +1,18 @@
-import { NoteListStyle } from "../style/note-list-style.js";
-import NoteServices from "../api/api-service.js";
-import { NoteItem } from "./note-item.js";
-import { animate } from "motion";
+import { NoteListStyle } from '../style/note-list-style.js';
+import NoteServices from '../api/api-service.js';
+import { NoteItem } from './note-item.js';
+import { animate } from 'motion';
 
 class NotedList extends HTMLElement {
   #notes = [];
-  #currentView = "active";
+  #currentView = 'active';
   #noteServices;
   #isLoading = false;
   #reloadInterval = null;
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.#noteServices = new NoteServices();
     this.#initializeStyles();
   }
@@ -44,7 +44,7 @@ class NotedList extends HTMLElement {
       this.#hideLoading();
       this.#startAutoReload();
     } catch (error) {
-      console.error("Error loading notes:", error);
+      console.error('Error loading notes:', error);
       this.#renderError();
       this.#hideLoading();
     }
@@ -70,90 +70,90 @@ class NotedList extends HTMLElement {
   async #checkForNewNotes() {
     try {
       const response =
-        this.#currentView === "active"
+        this.#currentView === 'active'
           ? await this.#noteServices.getAllNotes()
           : await this.#noteServices.getArchivedNotes();
 
-      if (response.status === "success") {
+      if (response.status === 'success') {
         if (JSON.stringify(response.data) !== JSON.stringify(this.#notes)) {
-          console.log("New notes detected, updating view");
+          console.log('New notes detected, updating view');
           this.#notes = response.data;
           this.#render();
         }
       }
     } catch (error) {
-      console.error("Error checking for new notes:", error);
+      console.error('Error checking for new notes:', error);
     }
   }
 
   #showLoading() {
     this.#isLoading = true;
-    const loadingOverlay = this.shadowRoot.querySelector(".loading-overlay");
-    loadingOverlay.classList.add("active");
+    const loadingOverlay = this.shadowRoot.querySelector('.loading-overlay');
+    loadingOverlay.classList.add('active');
   }
 
   #hideLoading() {
     this.#isLoading = false;
-    const loadingOverlay = this.shadowRoot.querySelector(".loading-overlay");
-    loadingOverlay.classList.remove("active");
+    const loadingOverlay = this.shadowRoot.querySelector('.loading-overlay');
+    loadingOverlay.classList.remove('active');
   }
 
   async #loadNotes() {
     try {
       const response =
-        this.#currentView === "active"
+        this.#currentView === 'active'
           ? await this.#noteServices.getAllNotes()
           : await this.#noteServices.getArchivedNotes();
 
-      if (response.status === "success") {
+      if (response.status === 'success') {
         this.#notes = response.data;
       } else {
-        throw new Error("Failed to load notes");
+        throw new Error('Failed to load notes');
       }
     } catch (error) {
-      console.error("Error loading notes:", error);
+      console.error('Error loading notes:', error);
       throw error;
     }
   }
 
   #addControlEventListeners() {
-    const addButton = this.shadowRoot.querySelector(".add-button");
+    const addButton = this.shadowRoot.querySelector('.add-button');
     const categoryButtons =
-      this.shadowRoot.querySelectorAll(".category-button");
-    const noteFormDialog = this.shadowRoot.querySelector("note-form-dialog");
+      this.shadowRoot.querySelectorAll('.category-button');
+    const noteFormDialog = this.shadowRoot.querySelector('note-form-dialog');
 
-    const buttons = this.shadowRoot.querySelectorAll(".controls button");
+    const buttons = this.shadowRoot.querySelectorAll('.controls button');
     buttons.forEach((button, index) => {
       animate(
         button,
-        { opacity: [0, 1], transform: ["translateY(20px)", "translateY(0)"] },
-        { duration: 0.5, delay: index * 0.1 },
+        { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0)'] },
+        { duration: 0.5, delay: index * 0.1 }
       );
     });
 
-    addButton.addEventListener("click", () => {
+    addButton.addEventListener('click', () => {
       noteFormDialog.open();
     });
 
-    noteFormDialog.addEventListener("note-submitted", async (e) => {
+    noteFormDialog.addEventListener('note-submitted', async (e) => {
       try {
         this.#showLoading();
         const response = await this.#noteServices.createNote(e.detail);
-        if (response.status === "success") {
+        if (response.status === 'success') {
           await this.#loadNotes();
           this.#render();
         }
         this.#hideLoading();
       } catch (error) {
-        console.error("Error creating note:", error);
+        console.error('Error creating note:', error);
         this.#hideLoading();
       }
     });
 
     categoryButtons.forEach((button) => {
-      button.addEventListener("click", async (e) => {
-        categoryButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
+      button.addEventListener('click', async (e) => {
+        categoryButtons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
         this.#currentView = e.target.dataset.view;
         this.#showLoading();
         await this.#loadNotes();
@@ -164,7 +164,7 @@ class NotedList extends HTMLElement {
   }
 
   #render() {
-    const notesContainer = this.shadowRoot.querySelector("#notesList");
+    const notesContainer = this.shadowRoot.querySelector('#notesList');
 
     if (this.#notes.length === 0) {
       notesContainer.innerHTML = `
@@ -175,21 +175,21 @@ class NotedList extends HTMLElement {
       return;
     }
 
-    notesContainer.innerHTML = "";
+    notesContainer.innerHTML = '';
 
     this.#notes.forEach((note, index) => {
       const noteItem = new NoteItem(
         note,
         this.#handleArchive.bind(this),
         this.#handleUnarchive.bind(this),
-        this.#handleDelete.bind(this),
+        this.#handleDelete.bind(this)
       );
       notesContainer.appendChild(noteItem);
 
       animate(
         noteItem,
-        { opacity: [0, 1], transform: ["translateY(20px)", "translateY(0)"] },
-        { duration: 0.4, delay: index * 0.1 },
+        { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0)'] },
+        { duration: 0.4, delay: index * 0.1 }
       );
     });
   }
@@ -202,7 +202,7 @@ class NotedList extends HTMLElement {
       this.#render();
       this.#hideLoading();
     } catch (error) {
-      console.error("Error archiving note:", error);
+      console.error('Error archiving note:', error);
       this.#hideLoading();
     }
   }
@@ -215,7 +215,7 @@ class NotedList extends HTMLElement {
       this.#render();
       this.#hideLoading();
     } catch (error) {
-      console.error("Error unarchiving note:", error);
+      console.error('Error unarchiving note:', error);
       this.#hideLoading();
     }
   }
@@ -232,13 +232,13 @@ class NotedList extends HTMLElement {
 
       this.#hideLoading();
     } catch (error) {
-      console.error("Error deleting note:", error);
+      console.error('Error deleting note:', error);
       this.#hideLoading();
     }
   }
 
   #renderError() {
-    const notesContainer = this.shadowRoot.querySelector("#notesList");
+    const notesContainer = this.shadowRoot.querySelector('#notesList');
     notesContainer.innerHTML = `
             <div class="error-message">
                 Failed to load notes. Please try again later.
@@ -247,4 +247,4 @@ class NotedList extends HTMLElement {
   }
 }
 
-customElements.define("noted-list", NotedList);
+customElements.define('noted-list', NotedList);

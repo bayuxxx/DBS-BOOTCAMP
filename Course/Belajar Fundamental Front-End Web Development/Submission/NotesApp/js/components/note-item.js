@@ -1,4 +1,4 @@
-import { NoteListStyle } from "../style/note-list-style.js";
+import { NoteListStyle } from '../style/note-list-style.js';
 
 class NoteItem extends HTMLElement {
   #note;
@@ -8,7 +8,7 @@ class NoteItem extends HTMLElement {
 
   constructor(note, onArchive, onUnarchive, onDelete) {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.#note = note;
     this.#onArchive = onArchive;
     this.#onUnarchive = onUnarchive;
@@ -23,10 +23,10 @@ class NoteItem extends HTMLElement {
   render() {
     const { id, title, body, createdAt, archived } = this.#note;
 
-    const date = new Date(createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    const date = new Date(createdAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
 
     const actionButton = archived
@@ -57,30 +57,30 @@ class NoteItem extends HTMLElement {
   }
 
   #addEventListeners() {
-    const deleteButton = this.shadowRoot.querySelector(".delete-button");
-    const archiveButton = this.shadowRoot.querySelector(".archive-button");
-    const unarchiveButton = this.shadowRoot.querySelector(".unarchive-button");
+    const deleteButton = this.shadowRoot.querySelector('.delete-button');
+    const archiveButton = this.shadowRoot.querySelector('.archive-button');
+    const unarchiveButton = this.shadowRoot.querySelector('.unarchive-button');
 
     if (deleteButton) {
-      deleteButton.addEventListener("click", () => {
+      deleteButton.addEventListener('click', () => {
         this.#onDelete(this.#note.id);
       });
     }
 
     if (archiveButton) {
-      archiveButton.addEventListener("click", () => {
+      archiveButton.addEventListener('click', () => {
         this.#onArchive(this.#note.id);
       });
     }
 
     if (unarchiveButton) {
-      unarchiveButton.addEventListener("click", () => {
+      unarchiveButton.addEventListener('click', () => {
         this.#onUnarchive(this.#note.id);
       });
     }
   }
 }
 
-customElements.define("note-item", NoteItem);
+customElements.define('note-item', NoteItem);
 
 export { NoteItem };

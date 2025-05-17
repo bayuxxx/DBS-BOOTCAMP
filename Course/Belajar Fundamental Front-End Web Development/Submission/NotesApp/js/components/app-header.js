@@ -1,10 +1,10 @@
-import { AppHeaderStyle } from "../style/app-header-style";
-import { animate } from "motion";
+import { AppHeaderStyle } from '../style/app-header-style';
+import { animate } from 'motion';
 
 class AppHeader extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
@@ -29,14 +29,14 @@ class AppHeader extends HTMLElement {
   }
 
   addAnimations() {
-    const header = this.shadowRoot.querySelector(".header");
+    const header = this.shadowRoot.querySelector('.header');
 
     animate(
       header,
       { opacity: [0, 1], y: [-20, 0] },
-      { duration: 0.6, easing: "ease-out" },
+      { duration: 0.6, easing: 'ease-out' }
     );
   }
 }
 
-customElements.define("app-header", AppHeader);
+customElements.define('app-header', AppHeader);
